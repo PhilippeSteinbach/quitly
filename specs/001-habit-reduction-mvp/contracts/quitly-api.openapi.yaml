@@ -1,0 +1,448 @@
+openapi: 3.1.1
+info:
+  title: Quitly API
+  version: 1.0.0
+  description: API contract for Quitly Habit Reduction MVP
+servers:
+  - url: /api/v1
+paths:
+  /auth/register:
+    post:
+      summary: Register user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+  /auth/login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+  /habit:
+    get:
+      summary: Get active habit
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Active habit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Habit'
+    put:
+      summary: Upsert active habit
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HabitUpsertRequest'
+      responses:
+        '200':
+          description: Habit updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Habit'
+  /check-ins:
+    post:
+      summary: Create or correct daily check-in
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckInUpsertRequest'
+      responses:
+        '201':
+          description: Check-in stored
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckIn'
+    get:
+      summary: List check-ins
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Check-ins list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CheckIn'
+  /relapse:
+    post:
+      summary: Mark relapse event
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelapseCreateRequest'
+      responses:
+        '201':
+          description: Relapse recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relapse'
+  /recovery-steps:
+    post:
+      summary: Create or complete recovery step
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecoveryStepRequest'
+      responses:
+        '201':
+          description: Recovery step upserted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecoveryStep'
+  /streak:
+    get:
+      summary: Get current streak
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Streak snapshot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Streak'
+  /prompts/today:
+    get:
+      summary: Get passive prompt for today
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Prompt payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptPayload'
+  /prompts/preferences:
+    put:
+      summary: Update passive prompt preferences
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromptPreferenceRequest'
+      responses:
+        '200':
+          description: Preferences updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptPreference'
+  /insights/weekly:
+    get:
+      summary: Get weekly insight
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: weekStart
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Weekly insight
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeeklyInsight'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [email, password, timezone]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        timezone:
+          type: string
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    AuthResponse:
+      type: object
+      required: [accessToken, refreshToken]
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    HabitUpsertRequest:
+      type: object
+      required: [category, mode, title]
+      properties:
+        category:
+          type: string
+          enum: [smoking, social_media, sugar, impulse_buying, custom]
+        mode:
+          type: string
+          enum: [reduce, quit]
+        title:
+          type: string
+          minLength: 2
+          maxLength: 120
+    Habit:
+      type: object
+      required: [id, category, mode, title, active, startedOn]
+      properties:
+        id:
+          type: string
+          format: uuid
+        category:
+          type: string
+        mode:
+          type: string
+        title:
+          type: string
+        active:
+          type: boolean
+        startedOn:
+          type: string
+          format: date
+    CheckInUpsertRequest:
+      type: object
+      required: [day, status]
+      properties:
+        day:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [abstinent, non_abstinent, unsure]
+        mood:
+          type: string
+          enum: [very_low, low, neutral, good, very_good]
+        triggers:
+          type: array
+          items:
+            type: string
+        note:
+          type: string
+          maxLength: 500
+    CheckIn:
+      type: object
+      required: [id, day, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        day:
+          type: string
+          format: date
+        status:
+          type: string
+        mood:
+          type: string
+          nullable: true
+        triggers:
+          type: array
+          items:
+            type: string
+        note:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    RelapseCreateRequest:
+      type: object
+      required: [occurredAt]
+      properties:
+        occurredAt:
+          type: string
+          format: date-time
+        contextNote:
+          type: string
+          maxLength: 500
+    Relapse:
+      type: object
+      required: [id, occurredAt, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        occurredAt:
+          type: string
+          format: date-time
+        contextNote:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    RecoveryStepRequest:
+      type: object
+      required: [relapseId, stepText]
+      properties:
+        relapseId:
+          type: string
+          format: uuid
+        stepText:
+          type: string
+          minLength: 3
+          maxLength: 300
+        completed:
+          type: boolean
+          default: false
+    RecoveryStep:
+      type: object
+      required: [id, relapseId, stepText, dueWithinHours, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        relapseId:
+          type: string
+          format: uuid
+        stepText:
+          type: string
+        dueWithinHours:
+          type: integer
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    Streak:
+      type: object
+      required: [currentStreakDays]
+      properties:
+        currentStreakDays:
+          type: integer
+          minimum: 0
+        lastAbstinentDay:
+          type: string
+          format: date
+          nullable: true
+        lastNonAbstinentDay:
+          type: string
+          format: date
+          nullable: true
+    PromptPayload:
+      type: object
+      required: [showPrompt, message]
+      properties:
+        showPrompt:
+          type: boolean
+        message:
+          type: string
+    PromptPreferenceRequest:
+      type: object
+      required: [passivePromptEnabled]
+      properties:
+        passivePromptEnabled:
+          type: boolean
+        promptTone:
+          type: string
+          enum: [gentle, neutral]
+    PromptPreference:
+      type: object
+      required: [passivePromptEnabled, promptTone]
+      properties:
+        passivePromptEnabled:
+          type: boolean
+        promptTone:
+          type: string
+    WeeklyInsight:
+      type: object
+      required: [weekStart, checkInCount, abstinentDays, summaryText, confidence]
+      properties:
+        weekStart:
+          type: string
+          format: date
+        checkInCount:
+          type: integer
+        abstinentDays:
+          type: integer
+        topTriggers:
+          type: array
+          items:
+            type: string
+        moodTrend:
+          type: object
+          additionalProperties: true
+        summaryText:
+          type: string
+        confidence:
+          type: string
+          enum: [low, medium, high]
