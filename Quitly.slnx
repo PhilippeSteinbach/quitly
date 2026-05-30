@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/backend/" />
+  <Folder Name="/backend/src/">
+    <Project Path="backend/src/Quitly.Api.csproj" />
+  </Folder>
+  <Folder Name="/backend/tests/" />
+  <Folder Name="/backend/tests/contract/">
+    <Project Path="backend/tests/contract/Quitly.ContractTests.csproj" />
+  </Folder>
+  <Folder Name="/backend/tests/integration/">
+    <Project Path="backend/tests/integration/Quitly.IntegrationTests.csproj" />
+  </Folder>
+  <Folder Name="/backend/tests/unit/">
+    <Project Path="backend/tests/unit/Quitly.UnitTests.csproj" />
+  </Folder>
+</Solution>

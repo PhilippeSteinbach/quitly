@@ -1,0 +1,84 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Kill Port 5200",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"$conn = Get-NetTCPConnection -LocalPort 5200 -ErrorAction SilentlyContinue ; if ($conn) { $procIds = $conn | Select-Object -ExpandProperty OwningProcess -Unique ; foreach ($procId in $procIds) { Stop-Process -Id $procId -Force -ErrorAction SilentlyContinue } } ; exit 0"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "Run Backend API",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"Get-Content backend/.env | ForEach-Object { if ($_ -match '^[\\s]*([^#=]+)=(.*)$') { [Environment]::SetEnvironmentVariable($matches[1].Trim(), $matches[2].Trim()) } } ; dotnet run --project backend/src/Quitly.Api.csproj"
+			],
+			"options": {
+				"env": {
+					"ASPNETCORE_ENVIRONMENT": "Development"
+				}
+			},
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "custom",
+				"pattern": {
+					"regexp": ".*"
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".*",
+					"endsPattern": "Now listening on:"
+				}
+			},
+			"group": "build"
+		},
+		{
+			"label": "Run Frontend Dev Server",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"--prefix",
+				"frontend",
+				"run",
+				"dev"
+			],
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "custom",
+				"pattern": {
+					"regexp": ".*"
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".*",
+					"endsPattern": "ready in|Local:"
+				}
+			},
+			"group": "build"
+		},
+		{
+			"label": "Start Quitly App",
+			"dependsOn": [
+				"Run Backend API",
+				"Run Frontend Dev Server"
+			],
+			"dependsOrder": "parallel",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}
