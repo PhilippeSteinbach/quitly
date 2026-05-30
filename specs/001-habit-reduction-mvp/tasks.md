@@ -34,11 +34,11 @@
 
 **Purpose**: Project initialization and baseline developer workflow
 
-- [ ] T001 Create backend and frontend project skeleton in backend/src/Program.cs [Goal: establish runnable webapp split | Components: backend, frontend | Depends: none | Effort: S | Acceptance: both apps start locally | Tests: smoke run commands pass]
-- [ ] T002 [P] Create frontend app shell and routing scaffold in frontend/src/app/router.tsx [Goal: baseline navigation | Components: React app shell | Depends: T001 | Effort: S | Acceptance: app routes render | Tests: frontend smoke test]
-- [ ] T003 [P] Configure Tailwind and shadcn baseline in frontend/src/app/styles.css [Goal: design system readiness | Components: Tailwind, shadcn | Depends: T002 | Effort: S | Acceptance: shadcn component renders with expected styling | Tests: visual smoke]
-- [ ] T004 [P] Configure CI quality pipeline in .github/workflows/ci.yml [Goal: automated checks per push | Components: unit, integration, contract jobs | Depends: T001 | Effort: M | Acceptance: CI runs lint and tests | Tests: CI dry run]
-- [ ] T005 Configure environment template in .env.example [Goal: consistent local setup | Components: DB, JWT, app vars | Depends: T001 | Effort: S | Acceptance: quickstart env vars covered | Tests: startup with env template]
+- [X] T001 Create backend and frontend project skeleton in backend/src/Program.cs [Goal: establish runnable webapp split | Components: backend, frontend | Depends: none | Effort: S | Acceptance: both apps start locally | Tests: smoke run commands pass]
+- [X] T002 [P] Create frontend app shell and routing scaffold in frontend/src/app/router.tsx [Goal: baseline navigation | Components: React app shell | Depends: T001 | Effort: S | Acceptance: app routes render | Tests: frontend smoke test]
+- [X] T003 [P] Configure Tailwind and shadcn baseline in frontend/src/app/styles.css [Goal: design system readiness | Components: Tailwind, shadcn | Depends: T002 | Effort: S | Acceptance: shadcn component renders with expected styling | Tests: visual smoke]
+- [X] T004 [P] Configure CI quality pipeline in .github/workflows/ci.yml [Goal: automated checks per push | Components: unit, integration, contract jobs | Depends: T001 | Effort: M | Acceptance: CI runs lint and tests | Tests: CI dry run]
+- [X] T005 Configure environment template in .env.example [Goal: consistent local setup | Components: DB, JWT, app vars | Depends: T001 | Effort: S | Acceptance: quickstart env vars covered | Tests: startup with env template]
 
 ---
 
@@ -49,14 +49,14 @@
 **CRITICAL**: User-story implementation starts only after this phase
 
 - [ ] T006 Implement PostgreSQL DbContext and migration baseline in backend/src/persistence/QuitlyDbContext.cs [Goal: persistence foundation | Components: EF Core 10, Npgsql | Depends: T001, T005 | Effort: M | Acceptance: initial migration applies successfully | Tests: migration integration test]
-- [ ] T007 [P] Implement authentication endpoints in backend/src/api/AuthEndpoints.cs [Goal: register/login support | Components: JWT, password hashing | Depends: T001, T005 | Effort: M | Acceptance: register/login returns valid tokens | Tests: auth integration tests]
-- [ ] T008 [P] Implement auth middleware and ownership policy in backend/src/infrastructure/security/OwnershipPolicy.cs [Goal: resource isolation | Components: authz middleware | Depends: T007 | Effort: M | Acceptance: cross-user access denied | Tests: authorization integration tests]
-- [ ] T009 Create core domain entities for MVP in backend/src/domain/entities/User.cs [Goal: shared model baseline | Components: User, Habit, CheckIn, Trigger, Streak, Reminder, WeeklyInsight | Depends: T006 | Effort: M | Acceptance: entities map to DB schema | Tests: persistence mapping tests]
-- [ ] T010 [P] Implement API error envelope and validation pipeline in backend/src/infrastructure/http/ErrorHandlingMiddleware.cs [Goal: predictable API behavior | Components: validation + exception mapping | Depends: T001 | Effort: S | Acceptance: consistent 4xx/5xx payloads | Tests: API error contract tests]
-- [ ] T011 [P] Add API client, interceptors, and token refresh handling in frontend/src/services/httpClient.ts [Goal: reliable frontend-backend communication | Components: Axios, auth interceptor | Depends: T007 | Effort: M | Acceptance: authenticated requests refresh token seamlessly | Tests: frontend integration tests]
-- [ ] T012 Implement privacy-safe KPI aggregation job in backend/src/application/metrics/KpiAggregationJob.cs [Goal: KPI without analytics events | Components: operational-table aggregation | Depends: T009 | Effort: M | Acceptance: KPI snapshots generated from product data only | Tests: aggregation unit/integration tests]
-- [ ] T039 [P] Implement guard to disable analytics consent UI/API in MVP in frontend/src/features/privacy/ConsentGate.tsx [Goal: explicit FR-018b implementation | Components: UI/API guard flags | Depends: T011 | Effort: S | Acceptance: no consent dialog or consent endpoint exposed in MVP mode | Tests: UI/API negative smoke test]
-- [ ] T040 [P] Add negative tests for absent analytics consent surfaces in frontend/tests/integration/privacy-consent.absence.spec.ts [Goal: explicit FR-018b verification | Components: integration + contract-negative checks | Depends: T039 | Effort: S | Acceptance: tests prove consent UI/API are absent in MVP | Tests: integration/contract negative tests]
+- [X] T007 [P] Implement authentication endpoints in backend/src/api/AuthEndpoints.cs [Goal: register/login support | Components: JWT, password hashing | Depends: T001, T005 | Effort: M | Acceptance: register/login returns valid tokens | Tests: auth integration tests]
+- [X] T008 [P] Implement auth middleware and ownership policy in backend/src/infrastructure/security/OwnershipPolicy.cs [Goal: resource isolation | Components: authz middleware | Depends: T007 | Effort: M | Acceptance: cross-user access denied | Tests: authorization integration tests]
+- [X] T009 Create core domain entities for MVP in backend/src/domain/entities/User.cs [Goal: shared model baseline | Components: User, Habit, CheckIn, Trigger, Streak, Reminder, WeeklyInsight | Depends: T006 | Effort: M | Acceptance: entities map to DB schema | Tests: persistence mapping tests]
+- [X] T010 [P] Implement API error envelope and validation pipeline in backend/src/infrastructure/http/ErrorHandlingMiddleware.cs [Goal: predictable API behavior | Components: validation + exception mapping | Depends: T001 | Effort: S | Acceptance: consistent 4xx/5xx payloads | Tests: API error contract tests]
+- [X] T011 [P] Add API client, interceptors, and token refresh handling in frontend/src/services/httpClient.ts [Goal: reliable frontend-backend communication | Components: Axios, auth interceptor | Depends: T007 | Effort: M | Acceptance: authenticated requests refresh token seamlessly | Tests: frontend integration tests]
+- [X] T012 Implement privacy-safe KPI aggregation job in backend/src/application/metrics/KpiAggregationJob.cs [Goal: KPI without analytics events | Components: operational-table aggregation | Depends: T009 | Effort: M | Acceptance: KPI snapshots generated from product data only | Tests: aggregation unit/integration tests]
+- [X] T039 [P] Implement guard to disable analytics consent UI/API in MVP in frontend/src/features/privacy/ConsentGate.tsx [Goal: explicit FR-018b implementation | Components: UI/API guard flags | Depends: T011 | Effort: S | Acceptance: no consent dialog or consent endpoint exposed in MVP mode | Tests: UI/API negative smoke test]
+- [X] T040 [P] Add negative tests for absent analytics consent surfaces in frontend/tests/integration/privacy-consent.absence.spec.ts [Goal: explicit FR-018b verification | Components: integration + contract-negative checks | Depends: T039 | Effort: S | Acceptance: tests prove consent UI/API are absent in MVP | Tests: integration/contract negative tests]
 
 **Checkpoint**: Foundation complete; user story phases can proceed
 
@@ -70,15 +70,15 @@
 
 ### Tests for US1
 
-- [ ] T013 [P] [US1] Add contract tests for habit endpoints in backend/tests/contract/HabitEndpoints.contract.test.cs [Goal: lock API behavior | Components: GET/PUT /habit | Depends: T007, T009 | Effort: S | Acceptance: schema and status codes match contract | Tests: contract tests fail-before-pass]
-- [ ] T014 [P] [US1] Add onboarding E2E flow test in frontend/tests/e2e/onboarding.spec.ts [Goal: verify full user journey | Components: onboarding UI + API | Depends: T011 | Effort: M | Acceptance: end-to-end onboarding passes | Tests: Playwright]
+- [X] T013 [P] [US1] Add contract tests for habit endpoints in backend/tests/contract/HabitEndpoints.contract.test.cs [Goal: lock API behavior | Components: GET/PUT /habit | Depends: T007, T009 | Effort: S | Acceptance: schema and status codes match contract | Tests: contract tests fail-before-pass]
+- [X] T014 [P] [US1] Add onboarding E2E flow test in frontend/tests/e2e/onboarding.spec.ts [Goal: verify full user journey | Components: onboarding UI + API | Depends: T011 | Effort: M | Acceptance: end-to-end onboarding passes | Tests: Playwright]
 
 ### Implementation for US1
 
-- [ ] T015 [US1] Implement habit application service in backend/src/application/habits/HabitService.cs [Goal: enforce single active habit rule | Components: service + repository | Depends: T009 | Effort: M | Acceptance: replacing active habit deactivates previous one | Tests: service unit tests]
-- [ ] T016 [US1] Implement habit endpoints in backend/src/api/HabitEndpoints.cs [Goal: expose onboarding goal APIs | Components: GET/PUT /habit | Depends: T015, T010 | Effort: S | Acceptance: authenticated users can upsert/read active habit | Tests: endpoint integration tests]
-- [ ] T017 [US1] Implement onboarding page and form in frontend/src/features/onboarding/OnboardingPage.tsx [Goal: clear goal setup UX | Components: form, validation, copy | Depends: T011 | Effort: M | Acceptance: valid goal saved and confirmation shown | Tests: RTL component tests]
-- [ ] T018 [US1] Wire onboarding query/mutation layer in frontend/src/features/onboarding/onboarding.api.ts [Goal: stable data sync | Components: TanStack Query + Axios | Depends: T016, T017 | Effort: S | Acceptance: optimistic updates and error states handled | Tests: frontend integration tests]
+- [X] T015 [US1] Implement habit application service in backend/src/application/habits/HabitService.cs [Goal: enforce single active habit rule | Components: service + repository | Depends: T009 | Effort: M | Acceptance: replacing active habit deactivates previous one | Tests: service unit tests]
+- [X] T016 [US1] Implement habit endpoints in backend/src/api/HabitEndpoints.cs [Goal: expose onboarding goal APIs | Components: GET/PUT /habit | Depends: T015, T010 | Effort: S | Acceptance: authenticated users can upsert/read active habit | Tests: endpoint integration tests]
+- [X] T017 [US1] Implement onboarding page and form in frontend/src/features/onboarding/OnboardingPage.tsx [Goal: clear goal setup UX | Components: form, validation, copy | Depends: T011 | Effort: M | Acceptance: valid goal saved and confirmation shown | Tests: RTL component tests]
+- [X] T018 [US1] Wire onboarding query/mutation layer in frontend/src/features/onboarding/onboarding.api.ts [Goal: stable data sync | Components: TanStack Query + Axios | Depends: T016, T017 | Effort: S | Acceptance: optimistic updates and error states handled | Tests: frontend integration tests]
 
 **Checkpoint**: US1 independently functional and testable
 
@@ -92,16 +92,16 @@
 
 ### Tests for US2
 
-- [ ] T019 [P] [US2] Add contract tests for check-in and streak endpoints in backend/tests/contract/CheckInStreak.contract.test.cs [Goal: lock key API contracts | Components: /check-ins, /streak | Depends: T009, T010 | Effort: M | Acceptance: contract tests pass against OpenAPI | Tests: contract tests]
-- [ ] T020 [P] [US2] Add streak rule unit tests in backend/tests/unit/StreakCalculatorTests.cs [Goal: deterministic streak logic | Components: abstinent/non-abstinent/missing day cases | Depends: T009 | Effort: S | Acceptance: all edge cases covered | Tests: xUnit unit tests]
+- [X] T019 [P] [US2] Add contract tests for check-in and streak endpoints in backend/tests/contract/CheckInStreak.contract.test.cs [Goal: lock key API contracts | Components: /check-ins, /streak | Depends: T009, T010 | Effort: M | Acceptance: contract tests pass against OpenAPI | Tests: contract tests]
+- [X] T020 [P] [US2] Add streak rule unit tests in backend/tests/unit/StreakCalculatorTests.cs [Goal: deterministic streak logic | Components: abstinent/non-abstinent/missing day cases | Depends: T009 | Effort: S | Acceptance: all edge cases covered | Tests: xUnit unit tests]
 
 ### Implementation for US2
 
-- [ ] T021 [US2] Implement check-in service with correction semantics in backend/src/application/checkins/CheckInService.cs [Goal: single effective check-in per day | Components: upsert + correction logic | Depends: T009 | Effort: M | Acceptance: corrections overwrite prior same-day status | Tests: service unit tests]
-- [ ] T022 [US2] Implement streak calculator and materialization in backend/src/application/streaks/StreakService.cs [Goal: strict streak policy | Components: reset/interrupt rules | Depends: T021, T020 | Effort: M | Acceptance: non-abstinent day resets to 0 | Tests: unit + integration]
-- [ ] T023 [US2] Implement check-in and streak endpoints in backend/src/api/CheckInEndpoints.cs [Goal: expose daily loop API | Components: POST/GET check-ins, GET streak | Depends: T021, T022 | Effort: M | Acceptance: endpoints match contract and auth rules | Tests: endpoint integration tests]
-- [ ] T024 [US2] Implement check-in UI flow in frontend/src/features/checkin/CheckInPage.tsx [Goal: quick daily reflection | Components: status, mood, triggers, note | Depends: T011, T023 | Effort: M | Acceptance: submit and correction UX works | Tests: RTL + integration]
-- [ ] T025 [US2] Implement streak card UI in frontend/src/features/streak/StreakCard.tsx [Goal: visible progress state | Components: current streak + last status hints | Depends: T023 | Effort: S | Acceptance: streak reflects backend updates | Tests: component tests]
+- [X] T021 [US2] Implement check-in service with correction semantics in backend/src/application/checkins/CheckInService.cs [Goal: single effective check-in per day | Components: upsert + correction logic | Depends: T009 | Effort: M | Acceptance: corrections overwrite prior same-day status | Tests: service unit tests]
+- [X] T022 [US2] Implement streak calculator and materialization in backend/src/application/streaks/StreakService.cs [Goal: strict streak policy | Components: reset/interrupt rules | Depends: T021, T020 | Effort: M | Acceptance: non-abstinent day resets to 0 | Tests: unit + integration]
+- [X] T023 [US2] Implement check-in and streak endpoints in backend/src/api/CheckInEndpoints.cs [Goal: expose daily loop API | Components: POST/GET check-ins, GET streak | Depends: T021, T022 | Effort: M | Acceptance: endpoints match contract and auth rules | Tests: endpoint integration tests]
+- [X] T024 [US2] Implement check-in UI flow in frontend/src/features/checkin/CheckInPage.tsx [Goal: quick daily reflection | Components: status, mood, triggers, note | Depends: T011, T023 | Effort: M | Acceptance: submit and correction UX works | Tests: RTL + integration]
+- [X] T025 [US2] Implement streak card UI in frontend/src/features/streak/StreakCard.tsx [Goal: visible progress state | Components: current streak + last status hints | Depends: T023 | Effort: S | Acceptance: streak reflects backend updates | Tests: component tests]
 
 **Checkpoint**: US2 independently functional and testable
 
@@ -115,14 +115,14 @@
 
 ### Tests for US3
 
-- [ ] T041 [P] [US3] Add contract tests for relapse and recovery endpoints in backend/tests/contract/RelapseRecovery.contract.test.cs [Goal: lock recovery contracts | Components: /relapse, /recovery-steps | Depends: T009, T010 | Effort: S | Acceptance: schema/status/security checks pass | Tests: contract tests]
-- [ ] T042 [P] [US3] Add integration test for relapse->recovery completion in backend/tests/integration/RelapseRecoveryFlowTests.cs [Goal: prove continuity behavior | Components: relapse mark + next-step completion | Depends: T009 | Effort: M | Acceptance: completion within 24h tracked correctly | Tests: integration tests]
+- [X] T041 [P] [US3] Add contract tests for relapse and recovery endpoints in backend/tests/contract/RelapseRecovery.contract.test.cs [Goal: lock recovery contracts | Components: /relapse, /recovery-steps | Depends: T009, T010 | Effort: S | Acceptance: schema/status/security checks pass | Tests: contract tests]
+- [X] T042 [P] [US3] Add integration test for relapse->recovery completion in backend/tests/integration/RelapseRecoveryFlowTests.cs [Goal: prove continuity behavior | Components: relapse mark + next-step completion | Depends: T009 | Effort: M | Acceptance: completion within 24h tracked correctly | Tests: integration tests]
 
 ### Implementation for US3
 
-- [ ] T043 [US3] Implement relapse and recovery services in backend/src/application/recovery/RecoveryService.cs [Goal: minimal non-shaming recovery logic | Components: relapse mark, next-step, completion | Depends: T021, T009 | Effort: M | Acceptance: users can create and complete recovery step | Tests: service unit tests]
-- [ ] T044 [US3] Implement relapse and recovery endpoints in backend/src/api/RecoveryEndpoints.cs [Goal: expose MVP recovery APIs | Components: POST /relapse, POST /recovery-steps | Depends: T043 | Effort: S | Acceptance: endpoints enforce auth/ownership and contract | Tests: endpoint integration tests]
-- [ ] T045 [US3] Implement recovery UI flow in frontend/src/features/recovery/RecoveryFlowPage.tsx [Goal: neutral, non-shaming UX | Components: relapse mark + one-step recovery | Depends: T044, T024 | Effort: M | Acceptance: user completes recovery flow from check-in context | Tests: frontend integration + E2E]
+- [X] T043 [US3] Implement relapse and recovery services in backend/src/application/recovery/RecoveryService.cs [Goal: minimal non-shaming recovery logic | Components: relapse mark, next-step, completion | Depends: T021, T009 | Effort: M | Acceptance: users can create and complete recovery step | Tests: service unit tests]
+- [X] T044 [US3] Implement relapse and recovery endpoints in backend/src/api/RecoveryEndpoints.cs [Goal: expose MVP recovery APIs | Components: POST /relapse, POST /recovery-steps | Depends: T043 | Effort: S | Acceptance: endpoints enforce auth/ownership and contract | Tests: endpoint integration tests]
+- [X] T045 [US3] Implement recovery UI flow in frontend/src/features/recovery/RecoveryFlowPage.tsx [Goal: neutral, non-shaming UX | Components: relapse mark + one-step recovery | Depends: T044, T024 | Effort: M | Acceptance: user completes recovery flow from check-in context | Tests: frontend integration + E2E]
 
 **Checkpoint**: US3 independently functional and testable
 
@@ -136,15 +136,15 @@
 
 ### Tests for US5
 
-- [ ] T026 [P] [US5] Add contract tests for prompt and weekly insight endpoints in backend/tests/contract/PromptInsight.contract.test.cs [Goal: lock prompt/insight contracts | Components: /prompts/*, /insights/weekly | Depends: T009, T010 | Effort: S | Acceptance: contract tests pass | Tests: contract tests]
-- [ ] T027 [P] [US5] Add weekly insight aggregation tests in backend/tests/unit/WeeklyInsightAggregatorTests.cs [Goal: trend correctness with sparse data | Components: confidence and fallback summaries | Depends: T009 | Effort: M | Acceptance: low/medium/high confidence scenarios pass | Tests: unit tests]
+- [X] T026 [P] [US5] Add contract tests for prompt and weekly insight endpoints in backend/tests/contract/PromptInsight.contract.test.cs [Goal: lock prompt/insight contracts | Components: /prompts/*, /insights/weekly | Depends: T009, T010 | Effort: S | Acceptance: contract tests pass | Tests: contract tests]
+- [X] T027 [P] [US5] Add weekly insight aggregation tests in backend/tests/unit/WeeklyInsightAggregatorTests.cs [Goal: trend correctness with sparse data | Components: confidence and fallback summaries | Depends: T009 | Effort: M | Acceptance: low/medium/high confidence scenarios pass | Tests: unit tests]
 
 ### Implementation for US5
 
-- [ ] T028 [US5] Implement passive prompt service and preference handling in backend/src/application/prompts/PromptService.cs [Goal: respectful non-pushy prompts | Components: prompt eligibility + preferences | Depends: T009 | Effort: M | Acceptance: prompt shown only when check-in missing and enabled | Tests: service tests]
-- [ ] T029 [US5] Implement weekly insight aggregation service in backend/src/application/insights/WeeklyInsightService.cs [Goal: actionable weekly summary | Components: trends, top triggers, summary text | Depends: T009, T012, T043 | Effort: M | Acceptance: weekly insight persisted and retrievable | Tests: integration tests]
-- [ ] T030 [US5] Implement prompt and insight endpoints in backend/src/api/InsightPromptEndpoints.cs [Goal: expose US5 APIs | Components: GET today prompt, PUT prefs, GET weekly insight | Depends: T028, T029 | Effort: S | Acceptance: endpoints meet contract and auth checks | Tests: endpoint integration tests]
-- [ ] T031 [US5] Implement dashboard prompt and weekly insights UI in frontend/src/features/insights/WeeklyInsightsPage.tsx [Goal: low-cognitive-load insight UX | Components: prompt banner + summary cards | Depends: T030 | Effort: M | Acceptance: prompt + insight render with empty-data fallback | Tests: frontend integration tests]
+- [X] T028 [US5] Implement passive prompt service and preference handling in backend/src/application/prompts/PromptService.cs [Goal: respectful non-pushy prompts | Components: prompt eligibility + preferences | Depends: T009 | Effort: M | Acceptance: prompt shown only when check-in missing and enabled | Tests: service tests]
+- [X] T029 [US5] Implement weekly insight aggregation service in backend/src/application/insights/WeeklyInsightService.cs [Goal: actionable weekly summary | Components: trends, top triggers, summary text | Depends: T009, T012, T043 | Effort: M | Acceptance: weekly insight persisted and retrievable | Tests: integration tests]
+- [X] T030 [US5] Implement prompt and insight endpoints in backend/src/api/InsightPromptEndpoints.cs [Goal: expose US5 APIs | Components: GET today prompt, PUT prefs, GET weekly insight | Depends: T028, T029 | Effort: S | Acceptance: endpoints meet contract and auth checks | Tests: endpoint integration tests]
+- [X] T031 [US5] Implement dashboard prompt and weekly insights UI in frontend/src/features/insights/WeeklyInsightsPage.tsx [Goal: low-cognitive-load insight UX | Components: prompt banner + summary cards | Depends: T030 | Effort: M | Acceptance: prompt + insight render with empty-data fallback | Tests: frontend integration tests]
 
 **Checkpoint**: US5 independently functional and testable
 
@@ -164,9 +164,9 @@
 
 **Purpose**: Production readiness and ship confidence
 
-- [ ] T035 [P] Accessibility audit fixes in frontend/src/components/accessibility/ [Goal: WCAG 2.2 AA conformance | Components: keyboard nav, labels, contrast | Depends: T017, T024, T031 | Effort: M | Acceptance: automated and manual a11y checks pass | Tests: axe + manual checklist]
-- [ ] T036 [P] Performance budget enforcement in frontend/tests/integration/performance.spec.ts [Goal: meet P95 interaction/render targets | Components: perf smoke + thresholds | Depends: T024, T031 | Effort: M | Acceptance: budgets pass in CI | Tests: perf tests]
-- [ ] T037 Security hardening and rate limit policies in backend/src/infrastructure/security/RateLimitingExtensions.cs [Goal: reduce abuse and auth risk | Components: auth throttle, secure headers | Depends: T007, T008 | Effort: S | Acceptance: throttling and headers verified | Tests: security integration tests]
+- [X] T035 [P] Accessibility audit fixes in frontend/src/components/accessibility/ [Goal: WCAG 2.2 AA conformance | Components: keyboard nav, labels, contrast | Depends: T017, T024, T031 | Effort: M | Acceptance: automated and manual a11y checks pass | Tests: axe + manual checklist]
+- [X] T036 [P] Performance budget enforcement in frontend/tests/integration/performance.spec.ts [Goal: meet P95 interaction/render targets | Components: perf smoke + thresholds | Depends: T024, T031 | Effort: M | Acceptance: budgets pass in CI | Tests: perf tests]
+- [X] T037 Security hardening and rate limit policies in backend/src/infrastructure/security/RateLimitingExtensions.cs [Goal: reduce abuse and auth risk | Components: auth throttle, secure headers | Depends: T007, T008 | Effort: S | Acceptance: throttling and headers verified | Tests: security integration tests]
 - [ ] T038 Run full quickstart and release checklist in specs/001-habit-reduction-mvp/quickstart.md [Goal: ship-ready validation | Components: end-to-end verification + rollback notes | Depends: T035, T036, T037 | Effort: S | Acceptance: checklist completed with evidence links | Tests: full regression run]
 
 ---

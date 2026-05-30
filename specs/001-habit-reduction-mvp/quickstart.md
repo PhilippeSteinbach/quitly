@@ -38,8 +38,18 @@
 2. Run accessibility checks (axe + keyboard navigation pass).
 3. Run performance smoke tests for check-in and insights flows.
 4. Confirm reliability target and privacy constraints (no analytics events in MVP).
+ 5. Verify security headers and rate limiting for auth and write-heavy routes.
 
 ## 6. Release Readiness
 1. Verify constitutional DoD checklist evidence.
-2. Prepare rollout and rollback notes.
-3. Tag milestone release candidate.
+ 2. Attach evidence for onboarding, check-in, relapse recovery, and weekly insights paths.
+ 3. Prepare rollout and rollback notes.
+ 4. Rollout notes: enable staging first, verify JWT config, DB connectivity, and passive prompt defaults.
+ 5. Rollback notes: redeploy previous image, restore previous environment variables, and disable newly introduced routes if DB migration state is uncertain.
+ 6. Tag milestone release candidate.
+
+ ## 7. Release Checklist Evidence
+ - Accessibility: skip link, visible labels, keyboard navigation spot-checks, and automated axe pass.
+ - Performance: frontend performance smoke thresholds for check-in and insight routes.
+ - Security: rate limiting active, HSTS in production, and secure response headers present.
+ - Recovery continuity: relapse and 24h recovery-step tests executed.
