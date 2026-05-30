@@ -49,7 +49,6 @@ public static class AuthEndpoints
 
         dbContext.Users.Add(user);
         dbContext.Reminders.Add(new Reminder { UserId = user.Id });
-        dbContext.Streaks.Add(new Streak { UserId = user.Id });
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

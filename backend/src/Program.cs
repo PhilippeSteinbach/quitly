@@ -43,6 +43,10 @@ builder.Services.AddScoped<PromptService>();
 builder.Services.AddScoped<WeeklyInsightService>();
 builder.Services.AddScoped<RecoveryService>();
 builder.Services.AddScoped<StreakService>();
+builder.Services.AddScoped<CalendarService>();
+builder.Services.AddScoped<StatsService>();
+builder.Services.AddScoped<FieldEncryptor>();
+builder.Services.AddDataProtection();
 builder.Services.AddHostedService<KpiAggregationJob>();
 
 var connectionString = builder.Configuration.GetConnectionString("Default")
@@ -101,6 +105,7 @@ api.MapAuthEndpoints();
 api.MapHabitEndpoints();
 api.MapCheckInEndpoints();
 api.MapRecoveryEndpoints();
+api.MapStreakEndpoints();
 api.MapInsightPromptEndpoints();
 
 app.Run();

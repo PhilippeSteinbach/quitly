@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Quitly.Api.Domain.Calculation;
 using Quitly.Api.Domain.Entities;
-using Quitly.Api.Domain.Enums;
 using Quitly.Api.Infrastructure.Security;
 using Quitly.Api.Persistence;
 
@@ -8,67 +8,52 @@ namespace Quitly.Api.Application.Streaks;
 
 public sealed class StreakService(QuitlyDbContext dbContext, ICurrentUserAccessor currentUserAccessor)
 {
-    public async Task<Streak> GetOrUpdateAsync(CancellationToken cancellationToken)
+    /// <summary>
+    /// Returns the current streak for the specified habit, recalculating and persisting
+    /// it using UTC-second precision via <see cref="StreakCalculator"/>.
+    /// </summary>
+    public async Task<StreakDto> GetStreakAsync(Guid habitId, CancellationToken cancellationToken)
     {
         var userId = currentUserAccessor.GetRequiredUserId();
-        var checkIns = await dbContext.CheckIns
+
+        var habit = await dbContext.Habits
             .AsNoTracking()
-            .Where(item => item.UserId == userId)
-            .OrderBy(item => item.Day)
+            .SingleOrDefaultAsync(h => h.Id == habitId && h.UserId == userId, cancellationToken)
+            ?? throw new ArgumentException("Habit not found for current user.");
+
+        var startedAt = habit.StartedAt
+            ?? new DateTimeOffset(habit.StartedOn.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
+
+        var relapseTimes = await dbContext.Relapses
+            .AsNoTracking()
+            .Where(r => r.HabitId == habitId && r.UserId == userId)
+            .Select(r => r.OccurredAt)
             .ToListAsync(cancellationToken);
 
-        var snapshot = CalculateSnapshot(checkIns);
-        var streak = await dbContext.Streaks.SingleOrDefaultAsync(item => item.UserId == userId, cancellationToken);
+        var now = DateTimeOffset.UtcNow;
+        var currentSeconds = StreakCalculator.CalculateCurrentSeconds(startedAt, relapseTimes, now);
+        var serverUtcMs = now.ToUnixTimeMilliseconds();
+
+        // Upsert streak row
+        var streak = await dbContext.Streaks
+            .SingleOrDefaultAsync(s => s.HabitId == habitId, cancellationToken);
 
         if (streak is null)
         {
-            streak = new Streak { UserId = userId };
+            streak = new Streak { HabitId = habitId };
             dbContext.Streaks.Add(streak);
         }
 
-        streak.CurrentStreakDays = snapshot.CurrentStreakDays;
-        streak.LastAbstinentDay = snapshot.LastAbstinentDay;
-        streak.LastNonAbstinentDay = snapshot.LastNonAbstinentDay;
-        streak.UpdatedAt = DateTimeOffset.UtcNow;
+        streak.CurrentStreakSeconds = currentSeconds;
+        streak.LastServerUtcMs = serverUtcMs;
+        streak.LastSyncAt = now;
 
         await dbContext.SaveChangesAsync(cancellationToken);
-        return streak;
-    }
 
-    public static StreakSnapshot CalculateSnapshot(IEnumerable<CheckIn> checkIns)
-    {
-        var ordered = checkIns.OrderBy(item => item.Day).ToList();
-        if (ordered.Count == 0)
-        {
-            return new StreakSnapshot(0, null, null);
-        }
-
-        var lastAbstinentDay = ordered.LastOrDefault(item => item.Status == CheckInStatus.Abstinent)?.Day;
-        var lastNonAbstinentDay = ordered.LastOrDefault(item => item.Status == CheckInStatus.NonAbstinent)?.Day;
-        var latest = ordered[^1];
-
-        if (latest.Status != CheckInStatus.Abstinent)
-        {
-            return new StreakSnapshot(0, lastAbstinentDay, lastNonAbstinentDay);
-        }
-
-        var current = latest.Day;
-        var streakDays = 0;
-
-        for (var index = ordered.Count - 1; index >= 0; index--)
-        {
-            var candidate = ordered[index];
-            if (candidate.Day != current || candidate.Status != CheckInStatus.Abstinent)
-            {
-                break;
-            }
-
-            streakDays++;
-            current = current.AddDays(-1);
-        }
-
-        return new StreakSnapshot(streakDays, lastAbstinentDay, lastNonAbstinentDay);
+        return new StreakDto(habitId, currentSeconds, serverUtcMs);
     }
 }
 
-public sealed record StreakSnapshot(int CurrentStreakDays, DateOnly? LastAbstinentDay, DateOnly? LastNonAbstinentDay);
+/// <summary>Response DTO for the streak endpoint.</summary>
+public sealed record StreakDto(Guid HabitId, long CurrentStreakSeconds, long ServerUtcMs);
+

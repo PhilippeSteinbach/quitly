@@ -21,6 +21,4 @@ public sealed class User
     public ICollection<CheckIn> CheckIns { get; set; } = new List<CheckIn>();
 
     public Reminder? Reminder { get; set; }
-
-    public Streak? Streak { get; set; }
 }

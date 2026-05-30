@@ -23,7 +23,6 @@ public static class CheckInEndpoints
     private static async Task<Created<CheckInResponse>> UpsertCheckInAsync(
         [FromBody] CheckInRequest request,
         CheckInService checkInService,
-        StreakService streakService,
         CancellationToken cancellationToken)
     {
         var checkIn = await checkInService.UpsertAsync(
@@ -34,8 +33,6 @@ public static class CheckInEndpoints
                 request.Triggers ?? Array.Empty<string>(),
                 request.Note),
             cancellationToken);
-
-        await streakService.GetOrUpdateAsync(cancellationToken);
 
         return TypedResults.Created($"/api/v1/check-ins/{checkIn.Id}", CheckInResponse.FromEntity(checkIn));
     }
@@ -50,12 +47,11 @@ public static class CheckInEndpoints
         return TypedResults.Ok(new CheckInListResponse(items.Select(CheckInResponse.FromEntity).ToArray()));
     }
 
-    private static async Task<Ok<StreakResponse>> GetStreakAsync(
-        StreakService streakService,
-        CancellationToken cancellationToken)
+    private static Ok<StreakResponse> GetStreakAsync()
     {
-        var streak = await streakService.GetOrUpdateAsync(cancellationToken);
-        return TypedResults.Ok(new StreakResponse(streak.CurrentStreakDays, streak.LastAbstinentDay, streak.LastNonAbstinentDay));
+        // Legacy endpoint — replaced by GET /habits/{id}/streak in Feature 008.
+        // Returns empty placeholder so existing clients don't break before migration.
+        return TypedResults.Ok(new StreakResponse(0, null, null));
     }
 
     private static CheckInStatus ParseStatus(string value) => value.Trim().ToLowerInvariant() switch

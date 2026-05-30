@@ -145,7 +145,11 @@ export function CheckInPage() {
         ) : null}
       </form>
 
-      <StreakCard streak={streakData} />
+      <StreakCard
+        currentStreakSeconds={(streakData && "currentStreakDays" in streakData ? streakData.currentStreakDays : 0) * 86400}
+        serverUtcMs={Date.now()}
+        startedAtMs={Date.now() - (streakData && "currentStreakDays" in streakData ? streakData.currentStreakDays : 0) * 86400_000}
+      />
     </section>
   );
 }

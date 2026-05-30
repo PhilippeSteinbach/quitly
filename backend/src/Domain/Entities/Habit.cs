@@ -18,6 +18,13 @@ public sealed class Habit
 
     public DateOnly StartedOn { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
 
+    /// <summary>
+    /// Second-accurate UTC instant when the user started the habit.
+    /// Null for habits created before Feature 008 rollout (legacy day-precision only).
+    /// When null, services fall back to StartedOn at 00:00:00 UTC.
+    /// </summary>
+    public DateTimeOffset? StartedAt { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
