@@ -2,15 +2,18 @@ namespace Quitly.Api.Domain.Entities;
 
 public sealed class Streak
 {
-    public Guid UserId { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
-    public int CurrentStreakDays { get; set; }
+    /// <summary>Foreign key to Habit. Unique — one streak row per habit.</summary>
+    public Guid HabitId { get; set; }
 
-    public DateOnly? LastAbstinentDay { get; set; }
+    /// <summary>Current streak length in UTC seconds (from latest relapse or startedAt).</summary>
+    public long CurrentStreakSeconds { get; set; }
 
-    public DateOnly? LastNonAbstinentDay { get; set; }
+    /// <summary>Server UTC epoch (ms) sent to clients at last sync — used for monotonic clock reference.</summary>
+    public long LastServerUtcMs { get; set; }
 
-    public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset LastSyncAt { get; set; } = DateTimeOffset.UtcNow;
 
-    public User? User { get; set; }
+    public Habit? Habit { get; set; }
 }

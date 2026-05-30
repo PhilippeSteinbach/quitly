@@ -41,7 +41,8 @@ public static class RecoveryEndpoints
 
     public sealed record RelapseResponse(Guid Id, DateTimeOffset OccurredAt, string? ContextNote, DateTimeOffset CreatedAt)
     {
-        public static RelapseResponse FromEntity(Relapse entity) => new(entity.Id, entity.OccurredAt, entity.ContextNote, entity.CreatedAt);
+        // ContextNote is decrypted by StreakEndpoints (Feature 008 calendar). Legacy callers get null.
+        public static RelapseResponse FromEntity(Relapse entity) => new(entity.Id, entity.OccurredAt, null, entity.CreatedAt);
     }
 
     public sealed record RecoveryStepResponse(Guid Id, Guid RelapseId, string StepText, int DueWithinHours, DateTimeOffset? CompletedAt, DateTimeOffset CreatedAt)

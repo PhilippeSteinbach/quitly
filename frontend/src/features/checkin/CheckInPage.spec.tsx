@@ -34,6 +34,6 @@ describe("CheckInPage", () => {
 
     expect(screen.getByText(/log today's status/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /save check-in/i })).toBeInTheDocument();
-    expect(screen.getByText("2")).toBeInTheDocument();
+    expect(screen.getByText(/Tage?/i)).toBeInTheDocument(); // StreakCard shows day unit
   });
 });

@@ -30,6 +30,14 @@
                  limiter.Window = TimeSpan.FromMinutes(1);
                  limiter.QueueLimit = 0;
              });
+
+             // GET /time — unauthenticated clock sync endpoint, 60 req/min per IP
+             options.AddFixedWindowLimiter("time_sync", limiter =>
+             {
+                 limiter.PermitLimit = 60;
+                 limiter.Window = TimeSpan.FromMinutes(1);
+                 limiter.QueueLimit = 0;
+             });
          });
 
          return services;

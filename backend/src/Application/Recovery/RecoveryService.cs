@@ -5,7 +5,7 @@ using Quitly.Api.Persistence;
 
 namespace Quitly.Api.Application.Recovery;
 
-public sealed class RecoveryService(QuitlyDbContext dbContext, ICurrentUserAccessor currentUserAccessor)
+public sealed class RecoveryService(QuitlyDbContext dbContext, ICurrentUserAccessor currentUserAccessor, FieldEncryptor fieldEncryptor)
 {
     public async Task<Relapse> CreateRelapseAsync(RelapseCreateCommand command, CancellationToken cancellationToken)
     {
@@ -18,7 +18,9 @@ public sealed class RecoveryService(QuitlyDbContext dbContext, ICurrentUserAcces
             UserId = userId,
             HabitId = habit.Id,
             OccurredAt = command.OccurredAt,
-            ContextNote = command.ContextNote?.Trim(),
+            ContextNoteEncrypted = command.ContextNote is { Length: > 0 } note
+                ? fieldEncryptor.Encrypt(note.Trim(), userId)
+                : null,
             CreatedAt = DateTimeOffset.UtcNow
         };
 

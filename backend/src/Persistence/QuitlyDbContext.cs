@@ -103,10 +103,12 @@ public sealed class QuitlyDbContext(DbContextOptions<QuitlyDbContext> options) :
         modelBuilder.Entity<Streak>(entity =>
         {
             entity.ToTable("streaks");
-            entity.HasKey(item => item.UserId);
-            entity.HasOne(item => item.User)
-                .WithOne(item => item.Streak)
-                .HasForeignKey<Streak>(item => item.UserId);
+            entity.HasKey(item => item.Id);
+            entity.HasIndex(item => item.HabitId).IsUnique();
+            entity.HasOne(item => item.Habit)
+                .WithMany()
+                .HasForeignKey(item => item.HabitId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Reminder>(entity =>
@@ -132,7 +134,7 @@ public sealed class QuitlyDbContext(DbContextOptions<QuitlyDbContext> options) :
         {
             entity.ToTable("relapses");
             entity.HasKey(item => item.Id);
-            entity.Property(item => item.ContextNote).HasMaxLength(500);
+            entity.Property(item => item.ContextNoteEncrypted).HasColumnType("bytea");
             entity.HasOne(item => item.User).WithMany().HasForeignKey(item => item.UserId);
             entity.HasOne(item => item.Habit).WithMany(item => item.Relapses).HasForeignKey(item => item.HabitId);
         });
