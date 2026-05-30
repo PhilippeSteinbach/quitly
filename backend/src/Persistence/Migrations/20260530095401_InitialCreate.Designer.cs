@@ -12,7 +12,7 @@ using Quitly.Api.Persistence;
 namespace Quitly.Api.Persistence.Migrations
 {
     [DbContext(typeof(QuitlyDbContext))]
-    [Migration("20260530092816_InitialCreate")]
+    [Migration("20260530095401_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -120,7 +120,7 @@ namespace Quitly.Api.Persistence.Migrations
 
                     b.HasIndex("UserId", "Active")
                         .IsUnique()
-                        .HasFilter("active = true");
+                        .HasFilter("\"Active\" = true");
 
                     b.ToTable("habits", (string)null);
                 });

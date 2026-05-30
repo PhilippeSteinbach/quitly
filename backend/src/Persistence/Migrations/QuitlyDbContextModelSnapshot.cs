@@ -117,7 +117,7 @@ namespace Quitly.Api.Persistence.Migrations
 
                     b.HasIndex("UserId", "Active")
                         .IsUnique()
-                        .HasFilter("active = true");
+                        .HasFilter("\"Active\" = true");
 
                     b.ToTable("habits", (string)null);
                 });

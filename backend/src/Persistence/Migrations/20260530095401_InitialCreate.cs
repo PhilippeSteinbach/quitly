@@ -268,7 +268,7 @@ namespace Quitly.Api.Persistence.Migrations
                 table: "habits",
                 columns: new[] { "UserId", "Active" },
                 unique: true,
-                filter: "active = true");
+                filter: "\"Active\" = true");
 
             migrationBuilder.CreateIndex(
                 name: "IX_recovery_plan_steps_RelapseId",

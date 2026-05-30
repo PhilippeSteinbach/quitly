@@ -60,4 +60,6 @@
  - EF migration: `InitialCreate` generated at `backend/src/Persistence/Migrations/`.
  - Frontend build: `npm run build` → vite bundle produced (`dist/index-*.js` ~388 kB).
  - Frontend tests: vitest 8/8 passed (component, integration, performance smoke, privacy gate).
- - Open follow-ups: live Postgres `database update`, Playwright E2E on running stack, axe automation run.
+ - Live Postgres: `dotnet ef database update` applied `InitialCreate` against `postgres:18-alpine` Docker container (11 snake_case tables + migration history).
+ - Playwright E2E: chromium project 2/2 passed against `vite preview` on `http://localhost:4173` (Node 24 LTS).
+ - Open follow-up: axe automation run against deployed UI.

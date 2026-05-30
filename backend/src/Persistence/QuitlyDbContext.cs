@@ -57,7 +57,7 @@ public sealed class QuitlyDbContext(DbContextOptions<QuitlyDbContext> options) :
                 .WithMany(item => item.Habits)
                 .HasForeignKey(item => item.UserId);
             entity.HasIndex(item => new { item.UserId, item.Active })
-                .HasFilter("active = true")
+                .HasFilter("\"Active\" = true")
                 .IsUnique();
         });
 
