@@ -9,6 +9,8 @@ public sealed class QuitlyDbContext(DbContextOptions<QuitlyDbContext> options) :
 {
     public DbSet<User> Users => Set<User>();
 
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
     public DbSet<Habit> Habits => Set<Habit>();
 
     public DbSet<CheckIn> CheckIns => Set<CheckIn>();
@@ -155,6 +157,19 @@ public sealed class QuitlyDbContext(DbContextOptions<QuitlyDbContext> options) :
             entity.Property(item => item.Kind).HasMaxLength(60);
             entity.Property(item => item.Payload).HasColumnType("jsonb");
             entity.HasIndex(item => new { item.UserId, item.Kind });
+        });
+
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.ToTable("refresh_tokens");
+            entity.HasKey(item => item.Id);
+            entity.Property(item => item.TokenHash).HasMaxLength(128);
+            entity.HasIndex(item => item.TokenHash).IsUnique();
+            entity.HasIndex(item => item.UserId);
+            entity.HasOne(item => item.User)
+                .WithMany()
+                .HasForeignKey(item => item.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

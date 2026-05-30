@@ -17,6 +17,13 @@
                  limiter.QueueLimit = 0;
              });
 
+             options.AddFixedWindowLimiter("auth_refresh", limiter =>
+             {
+                 limiter.PermitLimit = 10;
+                 limiter.Window = TimeSpan.FromMinutes(1);
+                 limiter.QueueLimit = 0;
+             });
+
              options.AddFixedWindowLimiter("writes", limiter =>
              {
                  limiter.PermitLimit = 30;

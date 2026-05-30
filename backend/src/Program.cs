@@ -22,6 +22,16 @@ builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptio
 builder.Services.Configure<InterventionsOptions>(builder.Configuration.GetSection(InterventionsOptions.SectionName));
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("frontend-dev", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
@@ -76,13 +86,16 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseQuitlySecurityHeaders();
+app.UseRouting();
+app.UseCors("frontend-dev");
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGet("/health", () => TypedResults.Ok(new { status = "ok" }))
     .WithName("HealthCheck");
 
-var api = app.MapGroup("/api/v1");
+var api = app.MapGroup("/api/v1").RequireCors("frontend-dev");
 api.MapGet("/ping", () => TypedResults.Ok(new { message = "Quitly API ready" }));
 api.MapAuthEndpoints();
 api.MapHabitEndpoints();

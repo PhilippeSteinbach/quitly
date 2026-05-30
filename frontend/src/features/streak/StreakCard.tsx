@@ -1,16 +1,22 @@
 import type { StreakDto } from "@/features/checkin/checkin.api";
 
+type StreakLike = {
+  currentStreakDays: number;
+  longestStreakDays?: number;
+};
+
 type StreakCardProps = {
-  streak?: StreakDto;
+  streak?: StreakDto | StreakLike;
 };
 
 export function StreakCard({ streak }: StreakCardProps) {
+  const currentDays = streak && "currentStreakDays" in streak ? streak.currentStreakDays : 0;
   return (
     <section className="grid gap-4 rounded-[28px] border border-border bg-white p-6 shadow-soft">
       <p className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">Current streak</p>
       <div className="flex items-end gap-3">
         <span className="text-5xl font-semibold tracking-tight text-emerald-800">
-          {streak?.currentStreakDays ?? 0}
+          {currentDays}
         </span>
         <span className="pb-2 text-sm text-slate-600">abstinent days</span>
       </div>

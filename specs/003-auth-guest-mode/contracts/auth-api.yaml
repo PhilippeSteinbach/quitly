@@ -1,0 +1,187 @@
+openapi: 3.1.0
+info:
+  title: Quitly Auth API — Feature 003 Extensions
+  description: |
+    New and modified auth endpoints introduced by feature 003-auth-guest-mode.
+    Existing endpoints (POST /auth/register, POST /auth/login) are documented in
+    /specs/001-habit-reduction-mvp/contracts/quitly-api.openapi.yaml and remain
+    unchanged by this feature.
+
+    All endpoints are mounted under /api/v1.
+  version: 0.3.0
+  contact:
+    name: Quitly Engineering
+
+servers:
+  - url: http://localhost:5200/api/v1
+    description: Local development
+  - url: https://api.quitly.app/api/v1
+    description: Production
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    AuthResponse:
+      type: object
+      required: [accessToken, refreshToken]
+      properties:
+        accessToken:
+          type: string
+          description: Short-lived JWT (15 min TTL). Include in Authorization header.
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        refreshToken:
+          type: string
+          description: Rotating refresh token (30-day TTL). Store in localStorage.
+          example: dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4...
+
+    UserProfile:
+      type: object
+      required: [id, email, timezone, locale]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Server-assigned user ID
+        email:
+          type: string
+          format: email
+          description: Normalised (trimmed, lowercase) email address
+        timezone:
+          type: string
+          description: IANA timezone identifier
+          example: Europe/Berlin
+        locale:
+          type: string
+          description: BCP-47 locale string
+          example: en
+
+    RefreshRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+          description: The refresh token previously issued by /auth/login or /auth/refresh.
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          description: Machine-readable error code
+          example: token_expired
+
+paths:
+
+  /auth/refresh:
+    post:
+      operationId: refreshTokens
+      summary: Rotate access and refresh tokens
+      description: |
+        Exchanges a valid, non-revoked refresh token for a new access token and
+        a new refresh token (rotation). The old refresh token is immediately
+        revoked. On the next call, the new refresh token must be used.
+
+        Rate-limited: 10 requests per minute per IP.
+      security: []
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+            example:
+              refreshToken: dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4...
+      responses:
+        '200':
+          description: Tokens rotated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Refresh token is invalid, expired, or already revoked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                expired:
+                  value: { error: token_expired }
+                revoked:
+                  value: { error: token_revoked }
+                not_found:
+                  value: { error: token_not_found }
+
+  /auth/me:
+    get:
+      operationId: getCurrentUser
+      summary: Get authenticated user profile
+      description: |
+        Returns the identity and preferences of the currently authenticated user.
+        Used on app startup to rehydrate the auth context after a page reload when
+        a valid access token is present in localStorage.
+      tags: [Auth]
+      responses:
+        '200':
+          description: Authenticated user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+              example:
+                id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                email: user@example.com
+                timezone: Europe/Berlin
+                locale: en
+        '401':
+          description: Missing or invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: unauthorized
+
+  /auth/session:
+    delete:
+      operationId: logout
+      summary: Revoke refresh token (logout)
+      description: |
+        Revokes the supplied refresh token server-side, preventing further token
+        rotation. The client must also clear its localStorage tokens.
+
+        Idempotent: if the token is already revoked or not found, 204 is returned.
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+            example:
+              refreshToken: dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4...
+      responses:
+        '204':
+          description: Session revoked (or token was already invalid)
+        '401':
+          description: Missing or invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+tags:
+  - name: Auth
+    description: Authentication and session management

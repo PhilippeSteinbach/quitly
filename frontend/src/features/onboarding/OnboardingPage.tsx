@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useActiveHabitQuery, useUpsertHabitMutation, type HabitCategory, type HabitMode } from "@/features/onboarding/onboarding.api";
+import { useGuestHabitQuery, useUpsertGuestHabitMutation } from "@/features/guest/useGuestHabit";
+import { useAuth } from "@/features/auth/useAuth";
 
 const categories: Array<{ value: HabitCategory; label: string }> = [
   { value: "smoking", label: "Smoking" },
@@ -14,17 +16,38 @@ export function OnboardingPage() {
   const [mode, setMode] = useState<HabitMode>("quit");
   const [title, setTitle] = useState("Quit smoking after dinner");
 
+  const { mode: authMode } = useAuth();
+  const isGuest = authMode === "guest";
+
+  // Authenticated path
   const activeHabitQuery = useActiveHabitQuery();
   const upsertHabitMutation = useUpsertHabitMutation();
 
+  // Guest path
+  const guestHabitQuery = useGuestHabitQuery();
+  const upsertGuestHabitMutation = useUpsertGuestHabitMutation();
+
+  const activeHabit = isGuest ? guestHabitQuery.data : activeHabitQuery.data;
+  const isPending = isGuest ? upsertGuestHabitMutation.isPending : upsertHabitMutation.isPending;
+  const isSuccess = isGuest ? upsertGuestHabitMutation.isSuccess : upsertHabitMutation.isSuccess;
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await upsertHabitMutation.mutateAsync({
-      category,
-      mode,
-      title,
-      startedOn: new Date().toISOString().slice(0, 10)
-    });
+    if (isGuest) {
+      await upsertGuestHabitMutation.mutateAsync({
+        title,
+        category,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        createdAt: new Date().toISOString()
+      });
+    } else {
+      await upsertHabitMutation.mutateAsync({
+        category,
+        mode,
+        title,
+        startedOn: new Date().toISOString().slice(0, 10)
+      });
+    }
   };
 
   return (
@@ -71,10 +94,10 @@ export function OnboardingPage() {
         </label>
 
         <button className="inline-flex w-fit items-center justify-center rounded-full bg-emerald-700 px-5 py-3 text-base font-semibold text-white transition hover:bg-emerald-800" type="submit">
-          {upsertHabitMutation.isPending ? "Saving..." : "Save active goal"}
+          {isPending ? "Saving..." : "Save active goal"}
         </button>
 
-        {upsertHabitMutation.isSuccess ? (
+        {isSuccess ? (
           <p className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
             Active goal saved. You can continue into daily check-ins next.
           </p>
@@ -83,19 +106,19 @@ export function OnboardingPage() {
 
       <aside className="grid gap-4 rounded-[28px] border border-border bg-white/90 p-8 shadow-soft">
         <h3 className="text-xl font-semibold">Active goal snapshot</h3>
-        {activeHabitQuery.data ? (
+        {activeHabit ? (
           <dl className="grid gap-3 text-sm text-slate-700">
             <div>
               <dt className="font-semibold">Title</dt>
-              <dd>{activeHabitQuery.data.title}</dd>
+              <dd>{activeHabit.title}</dd>
             </div>
             <div>
               <dt className="font-semibold">Mode</dt>
-              <dd>{activeHabitQuery.data.mode}</dd>
+              <dd>{"mode" in activeHabit ? activeHabit.mode : "—"}</dd>
             </div>
             <div>
               <dt className="font-semibold">Category</dt>
-              <dd>{activeHabitQuery.data.category}</dd>
+              <dd>{activeHabit.category}</dd>
             </div>
           </dl>
         ) : (

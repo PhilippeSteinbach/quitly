@@ -10,6 +10,9 @@ export const tokenStorage = {
   getAccessToken() {
     return window.localStorage.getItem(ACCESS_TOKEN_KEY);
   },
+  getRefreshToken() {
+    return window.localStorage.getItem(REFRESH_TOKEN_KEY);
+  },
   setTokens(accessToken: string, refreshToken: string) {
     window.localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
     window.localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
@@ -37,13 +40,60 @@ httpClient.interceptors.request.use((config) => {
   return config;
 });
 
+let isRefreshing = false;
+let pendingRetries: Array<(token: string) => void> = [];
+
 httpClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
-      tokenStorage.clear();
+    const originalRequest = error.config as (typeof error.config) & { _retry?: boolean };
+
+    if (error.response?.status !== 401 || originalRequest._retry) {
+      return Promise.reject(error);
     }
 
-    return Promise.reject(error);
+    const refreshToken = tokenStorage.getRefreshToken();
+    if (!refreshToken) {
+      tokenStorage.clear();
+      window.dispatchEvent(new Event("auth:session-expired"));
+      return Promise.reject(error);
+    }
+
+    if (isRefreshing) {
+      // Queue the retry until the refresh finishes
+      return new Promise((resolve, reject) => {
+        pendingRetries.push((newToken) => {
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          originalRequest._retry = true;
+          resolve(httpClient(originalRequest));
+        });
+      });
+    }
+
+    isRefreshing = true;
+    originalRequest._retry = true;
+
+    try {
+      const { data } = await axios.post<{ accessToken: string; refreshToken: string }>(
+        `${API_BASE_URL}/auth/refresh`,
+        { refreshToken }
+      );
+
+      tokenStorage.setTokens(data.accessToken, data.refreshToken);
+
+      // Unblock queued requests
+      pendingRetries.forEach((cb) => cb(data.accessToken));
+      pendingRetries = [];
+
+      originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+      return httpClient(originalRequest);
+    } catch {
+      tokenStorage.clear();
+      pendingRetries = [];
+      window.dispatchEvent(new Event("auth:session-expired"));
+      return Promise.reject(error);
+    } finally {
+      isRefreshing = false;
+    }
   }
 );

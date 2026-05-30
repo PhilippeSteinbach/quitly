@@ -1,50 +1,80 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { App } from "@/app/App";
 import { CheckInPage } from "@/features/checkin/CheckInPage";
 import { WeeklyInsightsPage } from "@/features/insights/WeeklyInsightsPage";
 import { OnboardingPage } from "@/features/onboarding/OnboardingPage";
 import { PostMvpPlaceholder, isPostMvpEnabled } from "@/features/postmvp/PostMvpPlaceholder";
 import { RecoveryFlowPage } from "@/features/recovery/RecoveryFlowPage";
-
-function PlaceholderPage({
-  title,
-  description
-}: {
-  title: string;
-  description: string;
-}) {
-  return (
-    <section className="grid gap-4 rounded-[28px] border border-border bg-card p-8 shadow-soft">
-      <span className="inline-flex w-fit rounded-full bg-secondary px-3 py-1 text-sm text-slate-700">
-        MVP scaffold
-      </span>
-      <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
-      <p className="max-w-2xl text-base leading-7 text-slate-600">{description}</p>
-    </section>
-  );
-}
+import { RequireAuth } from "@/features/auth/RequireAuth";
+import { RequireSession } from "@/features/auth/RequireSession";
+import { WelcomePage } from "@/features/auth/WelcomePage";
+import { LoginPage } from "@/features/auth/LoginPage";
+import { RegisterPage } from "@/features/auth/RegisterPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
+      // Default redirect: unauthenticated → /welcome (handled by RequireSession inside protected routes)
       {
         index: true,
-        element: <OnboardingPage />
+        element: <Navigate to="/onboarding" replace />
+      },
+
+      // Public routes (no session required)
+      {
+        path: "welcome",
+        element: <WelcomePage />
       },
       {
-        path: "check-in",
-        element: <CheckInPage />
+        path: "login",
+        element: <LoginPage />
       },
       {
-        path: "recovery",
-        element: <RecoveryFlowPage />
+        path: "register",
+        element: <RegisterPage />
       },
+
+      // Protected routes — require at least guest or authenticated session
       {
-        path: "insights",
-        element: <WeeklyInsightsPage />
+        element: <RequireSession />,
+        children: [
+          {
+            path: "onboarding",
+            element: <OnboardingPage />
+          },
+          {
+            path: "check-in",
+            element: <CheckInPage />
+          },
+          {
+            path: "recovery",
+            element: <RecoveryFlowPage />
+          },
+          {
+            path: "insights",
+            element: <WeeklyInsightsPage />
+          }
+        ]
       },
+
+      // T022b: Protected routes — require full authentication
+      {
+        element: <RequireAuth />,
+        children: [
+          {
+            path: "account",
+            element: (
+              <PostMvpPlaceholder
+                feature="Account"
+                description="Account settings and profile management will be available here."
+              />
+            )
+          }
+        ]
+      },
+
       ...(isPostMvpEnabled()
         ? [
             {
@@ -71,6 +101,4 @@ export const router = createBrowserRouter([
   }
 ]);
 
-
-export { PlaceholderPage };
 

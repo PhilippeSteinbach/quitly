@@ -3,10 +3,16 @@ import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { describe, expect, it, vi } from "vitest";
 import { OnboardingPage } from "@/features/onboarding/OnboardingPage";
+import { AuthProvider } from "@/features/auth/AuthContext";
 
 vi.mock("@/features/onboarding/onboarding.api", () => ({
   useActiveHabitQuery: () => ({ data: null }),
   useUpsertHabitMutation: () => ({ isPending: false, isSuccess: false, mutateAsync: vi.fn() })
+}));
+
+vi.mock("@/features/guest/useGuestHabit", () => ({
+  useGuestHabitQuery: () => ({ data: null }),
+  useUpsertGuestHabitMutation: () => ({ isPending: false, isSuccess: false, mutateAsync: vi.fn() })
 }));
 
 describe("OnboardingPage", () => {
@@ -16,7 +22,9 @@ describe("OnboardingPage", () => {
     render(
       <MemoryRouter>
         <QueryClientProvider client={queryClient}>
-          <OnboardingPage />
+          <AuthProvider>
+            <OnboardingPage />
+          </AuthProvider>
         </QueryClientProvider>
       </MemoryRouter>
     );

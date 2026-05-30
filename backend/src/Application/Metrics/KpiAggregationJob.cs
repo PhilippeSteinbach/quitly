@@ -9,8 +9,27 @@ public sealed class KpiAggregationJob(IServiceScopeFactory serviceScopeFactory, 
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await AggregateAsync(stoppingToken);
-            await Task.Delay(TimeSpan.FromHours(6), stoppingToken);
+            try
+            {
+                await AggregateAsync(stoppingToken);
+            }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "KPI aggregation skipped due to an error. The application keeps running and will retry in 6 hours.");
+            }
+
+            try
+            {
+                await Task.Delay(TimeSpan.FromHours(6), stoppingToken);
+            }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                break;
+            }
         }
     }
 

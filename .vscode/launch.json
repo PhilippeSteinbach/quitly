@@ -1,0 +1,44 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend (.NET API)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "Kill Port 5200",
+      "program": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/backend/src/Quitly.Api.csproj"
+      ],
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/backend/.env",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Frontend (Edge)",
+      "type": "pwa-msedge",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/frontend",
+      "preLaunchTask": "Run Frontend Dev Server",
+      "runtimeExecutable": "stable",
+      "userDataDir": "${workspaceFolder}/.vscode/msedge-debug-profile",
+      "timeout": 60000
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Quitly Full Stack",
+      "configurations": [
+        "Backend (.NET API)",
+        "Frontend (Edge)"
+      ]
+    }
+  ]
+}

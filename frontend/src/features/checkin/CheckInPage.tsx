@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Message } from "primereact/message";
 import { useCheckInMutation, useStreakQuery, type CheckInStatus, type MoodValue } from "@/features/checkin/checkin.api";
 import { StreakCard } from "@/features/streak/StreakCard";
+import { useAuth } from "@/features/auth/useAuth";
+import { useGuestCheckInMutation } from "@/features/guest/useGuestCheckIns";
+import { useGuestStreakQuery } from "@/features/guest/useGuestStreak";
+import { isNoticeDismissed, dismissNotice } from "@/features/guest/guestStorage";
 
 const triggerOptions = ["stress", "boredom", "social", "late_night"] as const;
 
@@ -10,9 +15,22 @@ export function CheckInPage() {
   const [mood, setMood] = useState<MoodValue>("neutral");
   const [selectedTriggers, setSelectedTriggers] = useState<string[]>([]);
   const [note, setNote] = useState("");
+  const [noticeDismissed, setNoticeDismissed] = useState(isNoticeDismissed);
 
+  const { mode: authMode } = useAuth();
+  const isGuest = authMode === "guest";
+
+  // Authenticated hooks
   const streakQuery = useStreakQuery();
   const checkInMutation = useCheckInMutation();
+
+  // Guest hooks
+  const guestStreakQuery = useGuestStreakQuery();
+  const guestCheckInMutation = useGuestCheckInMutation();
+
+  const isPending = isGuest ? guestCheckInMutation.isPending : checkInMutation.isPending;
+  const isSuccess = isGuest ? guestCheckInMutation.isSuccess : checkInMutation.isSuccess;
+  const streakData = isGuest ? guestStreakQuery.data : streakQuery.data;
 
   const toggleTrigger = (value: string) => {
     setSelectedTriggers((current) =>
@@ -23,18 +41,43 @@ export function CheckInPage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    await checkInMutation.mutateAsync({
-      day: new Date().toISOString().slice(0, 10),
-      status,
-      mood,
-      triggers: selectedTriggers,
-      note
-    });
+    if (isGuest) {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const today = new Date().toLocaleDateString("en-CA", { timeZone: timezone });
+      await guestCheckInMutation.mutateAsync({
+        date: today,
+        status,
+        mood: mood as "very_low" | "low" | "neutral" | "good" | "very_good",
+        triggers: selectedTriggers,
+        note
+      });
+    } else {
+      await checkInMutation.mutateAsync({
+        day: new Date().toISOString().slice(0, 10),
+        status,
+        mood,
+        triggers: selectedTriggers,
+        note
+      });
+    }
   };
 
   return (
     <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
       <form className="grid gap-5 rounded-[28px] border border-border bg-card p-8 shadow-soft" onSubmit={handleSubmit}>
+        {/* T035: passive notice for guest mode — shown only first time */}
+        {isGuest && !noticeDismissed && (
+          <Message
+            className="w-full"
+            severity="info"
+            closable
+            text="Your data is stored locally on this device only."
+            onClose={() => {
+              dismissNotice();
+              setNoticeDismissed(true);
+            }}
+          />
+        )}
         <div className="space-y-2">
           <span className="inline-flex w-fit rounded-full bg-secondary px-3 py-1 text-sm text-slate-700">User story 2</span>
           <h2 className="text-3xl font-semibold tracking-tight">Log today&apos;s status, mood, and triggers in one short pass.</h2>
@@ -88,21 +131,21 @@ export function CheckInPage() {
 
         <div className="flex flex-wrap items-center gap-3">
           <button className="inline-flex w-fit items-center justify-center rounded-full bg-emerald-700 px-5 py-3 text-base font-semibold text-white transition hover:bg-emerald-800" type="submit">
-            {checkInMutation.isPending ? "Saving..." : "Save check-in"}
+            {isPending ? "Saving..." : "Save check-in"}
           </button>
-          <Link className="text-sm font-medium text-emerald-800 underline-offset-4 hover:underline" to="/">
+          <Link className="text-sm font-medium text-emerald-800 underline-offset-4 hover:underline" to="/onboarding">
             Back to onboarding
           </Link>
         </div>
 
-        {checkInMutation.isSuccess ? (
+        {isSuccess ? (
           <p className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
             Check-in saved. The streak snapshot refreshes from the API on the next successful query.
           </p>
         ) : null}
       </form>
 
-      <StreakCard streak={streakQuery.data} />
+      <StreakCard streak={streakData} />
     </section>
   );
 }
