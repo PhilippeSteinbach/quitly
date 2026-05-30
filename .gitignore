@@ -17,3 +17,8 @@ Thumbs.db
 *.tmp
 *.swp
 .idea/
+
+# TypeScript build artefacts emitted alongside config files
+*.tsbuildinfo
+frontend/*.config.js
+frontend/*.config.d.ts

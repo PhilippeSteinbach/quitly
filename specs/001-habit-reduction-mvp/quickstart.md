@@ -53,3 +53,11 @@
  - Performance: frontend performance smoke thresholds for check-in and insight routes.
  - Security: rate limiting active, HSTS in production, and secure response headers present.
  - Recovery continuity: relapse and 24h recovery-step tests executed.
+
+ ## 8. Validation Run (2026-05-30)
+ - Backend build: `dotnet build Quitly.slnx` → 0 warnings, 0 errors.
+ - Backend tests: unit 5/5, contract 4/4, integration 1/1 passed.
+ - EF migration: `InitialCreate` generated at `backend/src/Persistence/Migrations/`.
+ - Frontend build: `npm run build` → vite bundle produced (`dist/index-*.js` ~388 kB).
+ - Frontend tests: vitest 8/8 passed (component, integration, performance smoke, privacy gate).
+ - Open follow-ups: live Postgres `database update`, Playwright E2E on running stack, axe automation run.

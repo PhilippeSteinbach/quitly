@@ -18,7 +18,7 @@ public static class AuthEndpoints
         return group;
     }
 
-    private static async Task<Results<Created<AuthResponse>, Conflict<object>>> RegisterAsync(
+    private static async Task<Results<Created<AuthResponse>, Conflict<Dictionary<string, string>>>> RegisterAsync(
         [FromBody] RegisterRequest request,
         QuitlyDbContext dbContext,
         IPasswordHasher passwordHasher,
@@ -30,7 +30,7 @@ public static class AuthEndpoints
 
         if (exists)
         {
-            return TypedResults.Conflict(new { error = "email_taken" });
+            return TypedResults.Conflict(new Dictionary<string, string> { ["error"] = "email_taken" });
         }
 
         var user = new User

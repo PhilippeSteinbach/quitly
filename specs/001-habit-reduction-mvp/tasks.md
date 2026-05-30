@@ -48,7 +48,7 @@
 
 **CRITICAL**: User-story implementation starts only after this phase
 
-- [ ] T006 Implement PostgreSQL DbContext and migration baseline in backend/src/persistence/QuitlyDbContext.cs [Goal: persistence foundation | Components: EF Core 10, Npgsql | Depends: T001, T005 | Effort: M | Acceptance: initial migration applies successfully | Tests: migration integration test]
+- [X] T006 Implement PostgreSQL DbContext and migration baseline in backend/src/persistence/QuitlyDbContext.cs [Goal: persistence foundation | Components: EF Core 10, Npgsql | Depends: T001, T005 | Effort: M | Acceptance: initial migration applies successfully | Tests: migration integration test]
 - [X] T007 [P] Implement authentication endpoints in backend/src/api/AuthEndpoints.cs [Goal: register/login support | Components: JWT, password hashing | Depends: T001, T005 | Effort: M | Acceptance: register/login returns valid tokens | Tests: auth integration tests]
 - [X] T008 [P] Implement auth middleware and ownership policy in backend/src/infrastructure/security/OwnershipPolicy.cs [Goal: resource isolation | Components: authz middleware | Depends: T007 | Effort: M | Acceptance: cross-user access denied | Tests: authorization integration tests]
 - [X] T009 Create core domain entities for MVP in backend/src/domain/entities/User.cs [Goal: shared model baseline | Components: User, Habit, CheckIn, Trigger, Streak, Reminder, WeeklyInsight | Depends: T006 | Effort: M | Acceptance: entities map to DB schema | Tests: persistence mapping tests]
@@ -167,7 +167,7 @@
 - [X] T035 [P] Accessibility audit fixes in frontend/src/components/accessibility/ [Goal: WCAG 2.2 AA conformance | Components: keyboard nav, labels, contrast | Depends: T017, T024, T031 | Effort: M | Acceptance: automated and manual a11y checks pass | Tests: axe + manual checklist]
 - [X] T036 [P] Performance budget enforcement in frontend/tests/integration/performance.spec.ts [Goal: meet P95 interaction/render targets | Components: perf smoke + thresholds | Depends: T024, T031 | Effort: M | Acceptance: budgets pass in CI | Tests: perf tests]
 - [X] T037 Security hardening and rate limit policies in backend/src/infrastructure/security/RateLimitingExtensions.cs [Goal: reduce abuse and auth risk | Components: auth throttle, secure headers | Depends: T007, T008 | Effort: S | Acceptance: throttling and headers verified | Tests: security integration tests]
-- [ ] T038 Run full quickstart and release checklist in specs/001-habit-reduction-mvp/quickstart.md [Goal: ship-ready validation | Components: end-to-end verification + rollback notes | Depends: T035, T036, T037 | Effort: S | Acceptance: checklist completed with evidence links | Tests: full regression run]
+- [X] T038 Run full quickstart and release checklist in specs/001-habit-reduction-mvp/quickstart.md [Goal: ship-ready validation | Components: end-to-end verification + rollback notes | Depends: T035, T036, T037 | Effort: S | Acceptance: checklist completed with evidence links | Tests: full regression run]
 
 ---
 
