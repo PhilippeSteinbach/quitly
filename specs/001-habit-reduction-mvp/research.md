@@ -35,6 +35,24 @@
   - Move all relapse/intervention work to Post-MVP: faster initial scope but constitution conflict risk.
   - Expand full intervention suite into MVP: broader value but higher timeline and quality risk.
 
+## Decision 6: Achievement Scope Activation (Post-MVP)
+- Status: Pending
+- Owner: Product Lead (with input from UX Lead and Engineering Lead)
+- Decision deadline: End of Sprint 3 (prior to MVP public release)
+- Decision: Defer the achievements/badges surface entirely until a dedicated activation decision is made. No achievement UI, persistence, or backend endpoint ships with the MVP. The frontend mounts the `PostMvpPlaceholder` route only when `VITE_FEATURE_POSTMVP=true`; the backend exposes no achievement schema or controller.
+- Rationale: Achievement loops can incentivize relapses being under-reported (users protect a badge over reporting honestly), which conflicts with the constitutional relapse-safety principle. Activation requires explicit research that the chosen loop does not degrade honest self-report.
+- Acceptance criteria for activation:
+  1. Written research note (this file, Decision 6) flipped to `Status: Approved` with date and owner signature.
+  2. Behavioral risk review confirming the chosen achievement loop does not penalize relapse honesty (e.g., no streak-loss-only badges).
+  3. Telemetry plan that tracks honest-report rate before/after rollout.
+  4. Feature flag `VITE_FEATURE_POSTMVP` removed in favor of a dedicated `VITE_FEATURE_ACHIEVEMENTS` flag, or replaced by server-driven entitlement.
+- Trigger conditions for re-evaluation:
+  - Two consecutive weekly insights cycles show stable honest-report metrics post-MVP.
+  - User research surfaces a concrete demand for recognition that cannot be met by streaks + weekly insights alone.
+- Alternatives considered:
+  - Ship a minimal "first week" badge in MVP: rejected — too small to validate honesty risk, still requires schema/UI cost.
+  - Permanent removal: rejected — premature; team wants the option once behavioral safeguards are designed.
+
 ## Decision 6: Security Baseline
 - Decision: JWT access + rotating refresh tokens, resource ownership checks, auth endpoint rate limiting.
 - Rationale: Reasonable security posture for MVP with low operational overhead.

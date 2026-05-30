@@ -154,9 +154,9 @@
 
 **Purpose**: Prepare extension tracks without activating in MVP
 
-- [ ] T033 [US4] Define intervention entity and migrations as disabled feature flag in backend/src/domain/entities/Intervention.cs [Goal: extension readiness | Components: Intervention model + migration | Depends: T009 | Effort: S | Acceptance: schema present but APIs disabled | Tests: migration tests]
-- [ ] T034 [US4] Add guarded route placeholders in frontend/src/features/postmvp/PostMvpPlaceholder.tsx [Goal: avoid accidental MVP scope drift | Components: disabled routes + messaging | Depends: T002 | Effort: S | Acceptance: routes hidden unless feature flag enabled | Tests: route guard tests]
-- [ ] T046 [US4] Add achievement scope decision record in specs/001-habit-reduction-mvp/research.md [Goal: explicit Post-MVP decision checkpoint | Owner: Product Lead | Decision deadline: end of Sprint 3 (pre-MVP-release) | Components: product decision note + acceptance criteria + trigger conditions | Depends: none | Effort: S | Acceptance: decision status, owner, deadline and trigger conditions documented | Tests: review checklist]
+- [X] T033 [US4] Define intervention entity and migrations as disabled feature flag in backend/src/domain/entities/Intervention.cs [Goal: extension readiness | Components: Intervention model + migration | Depends: T009 | Effort: S | Acceptance: schema present but APIs disabled | Tests: migration tests]
+- [X] T034 [US4] Add guarded route placeholders in frontend/src/features/postmvp/PostMvpPlaceholder.tsx [Goal: avoid accidental MVP scope drift | Components: disabled routes + messaging | Depends: T002 | Effort: S | Acceptance: routes hidden unless feature flag enabled | Tests: route guard tests]
+- [X] T046 [US4] Add achievement scope decision record in specs/001-habit-reduction-mvp/research.md [Goal: explicit Post-MVP decision checkpoint | Owner: Product Lead | Decision deadline: end of Sprint 3 (pre-MVP-release) | Components: product decision note + acceptance criteria + trigger conditions | Depends: none | Effort: S | Acceptance: decision status, owner, deadline and trigger conditions documented | Tests: review checklist]
 
 ---
 

@@ -27,6 +27,8 @@ public sealed class QuitlyDbContext(DbContextOptions<QuitlyDbContext> options) :
 
     public DbSet<RecoveryPlanStep> RecoveryPlanSteps => Set<RecoveryPlanStep>();
 
+    public DbSet<Intervention> Interventions => Set<Intervention>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         var stringListConverter = new ValueConverter<List<string>, string>(
@@ -144,6 +146,15 @@ public sealed class QuitlyDbContext(DbContextOptions<QuitlyDbContext> options) :
             entity.HasOne(item => item.User)
                 .WithMany()
                 .HasForeignKey(item => item.UserId);
+        });
+
+        modelBuilder.Entity<Intervention>(entity =>
+        {
+            entity.ToTable("interventions");
+            entity.HasKey(item => item.Id);
+            entity.Property(item => item.Kind).HasMaxLength(60);
+            entity.Property(item => item.Payload).HasColumnType("jsonb");
+            entity.HasIndex(item => new { item.UserId, item.Kind });
         });
     }
 }

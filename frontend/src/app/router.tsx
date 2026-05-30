@@ -3,6 +3,7 @@ import { App } from "@/app/App";
 import { CheckInPage } from "@/features/checkin/CheckInPage";
 import { WeeklyInsightsPage } from "@/features/insights/WeeklyInsightsPage";
 import { OnboardingPage } from "@/features/onboarding/OnboardingPage";
+import { PostMvpPlaceholder, isPostMvpEnabled } from "@/features/postmvp/PostMvpPlaceholder";
 import { RecoveryFlowPage } from "@/features/recovery/RecoveryFlowPage";
 
 function PlaceholderPage({
@@ -43,7 +44,29 @@ export const router = createBrowserRouter([
       {
         path: "insights",
         element: <WeeklyInsightsPage />
-      }
+      },
+      ...(isPostMvpEnabled()
+        ? [
+            {
+              path: "achievements",
+              element: (
+                <PostMvpPlaceholder
+                  feature="Achievements"
+                  description="Achievement badges remain a Post-MVP exploration; this route is only mounted when the feature flag is on."
+                />
+              )
+            },
+            {
+              path: "interventions",
+              element: (
+                <PostMvpPlaceholder
+                  feature="Interventions"
+                  description="Adaptive interventions remain a Post-MVP exploration; the route is only mounted when the feature flag is on."
+                />
+              )
+            }
+          ]
+        : [])
     ]
   }
 ]);

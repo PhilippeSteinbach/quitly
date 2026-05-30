@@ -19,6 +19,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
+builder.Services.Configure<InterventionsOptions>(builder.Configuration.GetSection(InterventionsOptions.SectionName));
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
