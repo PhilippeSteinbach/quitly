@@ -1,0 +1,26 @@
+node_modules/
+dist/
+build/
+coverage/
+*.log
+.env
+.env.*
+
+bin/
+obj/
+packages/
+*.user
+*.suo
+
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.idea/
+
+# TypeScript build artefacts emitted alongside config files
+*.tsbuildinfo
+frontend/*.config.js
+frontend/*.config.d.ts
+frontend/test-results/
+frontend/playwright-report/

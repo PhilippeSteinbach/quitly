@@ -129,3 +129,52 @@
 - [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
 - [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
 - [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]
+
+## Constitution Alignment *(mandatory)*
+
+### User Welfare Impact
+
+- Explain how this feature improves user wellbeing outcomes.
+- Confirm no mechanic intentionally optimizes for compulsive engagement.
+
+### Relapse Handling
+
+- Define relapse-related states and expected non-shaming responses.
+- Include at least one acceptance scenario covering recovery after setback.
+
+### Privacy & Data Minimization
+
+- List all data elements introduced or changed by this feature.
+- Justify why each data element is required for core functionality.
+- Define retention/deletion expectations and opt-in requirements.
+
+### Clarity & Everyday UX
+
+- Describe the primary user path in plain language.
+- Explain how cognitive load is minimized in key moments.
+
+### Quality Budgets
+
+- Reliability target(s): [measurable thresholds]
+- Accessibility target(s): [WCAG criteria, assistive technology checks]
+- Performance target(s): [latency/interaction budgets]
+
+## Scope Classification *(mandatory)*
+
+- Feature classification: [MVP | Post-MVP]
+- Scope rationale: [Why now, why this scope]
+- If Post-MVP: [What user-risk or dependency blocks MVP inclusion]
+
+## Goal Conflict Resolution *(mandatory)*
+
+- Identify expected conflicts (if any), e.g., privacy vs analytics, speed vs accessibility.
+- Record intended decision using constitution precedence order.
+
+## Feature Definition of Done *(mandatory)*
+
+- [ ] Constitution alignment evidence attached
+- [ ] Tests implemented for primary, failure, and relapse paths
+- [ ] Accessibility checks passed (automated + manual spot-check)
+- [ ] Reliability and performance evidence attached
+- [ ] Privacy impact review completed
+- [ ] Rollout and rollback notes prepared
