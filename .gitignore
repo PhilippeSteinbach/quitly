@@ -22,3 +22,5 @@ Thumbs.db
 *.tsbuildinfo
 frontend/*.config.js
 frontend/*.config.d.ts
+frontend/test-results/
+frontend/playwright-report/
